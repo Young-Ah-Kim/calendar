@@ -7,7 +7,7 @@ calendarContainer.style.display = "flex";
 calendarContainer.style.flexDirection = "column";
 document.body.appendChild(calendarContainer);
 // CSS styling
-document.head.insertAdjacentHTML("beforeend", "\n  <link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap\" rel=\"stylesheet\">\n  <style>\n    body {\n      margin: 0;\n      padding: 0;\n      font-family: 'Poppins', Arial, sans-serif;\n      background-color: #f9f9f9;\n      cursor: auto; /* Use the default cursor */\n    }\n    #header {\n      background-color: pink; /* Updated header background color to pink */\n      padding: 20px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      height: 100px;\n    }\n    .header-input {\n      font-family: 'Poppins', Arial, sans-serif;\n      font-size: 2em;\n      color: #fff; /* Set text color to white */\n      background: transparent;\n      border: none;\n      text-align: center;\n      width: 100%;\n      outline: none;\n    }\n    .header-input::placeholder {\n      color: #ccc; /* Set placeholder color to light gray */\n    }\n    .day-of-week, .day {\n      width: 100px; /* Set a fixed width for all day and day-of-week cells */\n      height: 100px; /* Set a fixed height for all day and day-of-week cells */\n      box-sizing: border-box;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n    .day-of-week {\n      font-weight: bold;\n      text-align: center;\n      background-color: #f1f1f1;\n      padding: 5px;\n    }\n    #preset-image {\n      position: absolute;\n      top: 20px;\n      right: 20px;\n      width: 100px;\n      height: 100px;\n      border-radius: 50%;\n      border: 2px solid #ddd;\n      cursor: pointer; /* Add cursor pointer for preset image */\n    }\n    button {\n      background: none;\n      color: blue;\n      font-size: 1.2em;\n      border: none;\n      cursor: pointer;\n      text-decoration: underline;\n    }\n    button:disabled {\n      color: gray;\n      cursor: not-allowed;\n    }\n    .day {\n      padding: 10px;\n      margin: 2px;\n      cursor: pointer;\n      text-align: center;\n      box-sizing: border-box;\n      border-radius: 50%; /* Keep this line to make the border round */\n    }\n    .today {\n      color: #FF6961; /* Set TODAY text color to light red */\n      font-weight: bold; /* Make the text bold */\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n    }\n  </style>\n");
+document.head.insertAdjacentHTML("beforeend", "\n  <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap\" rel=\"stylesheet\">\n  <link href=\"https://fonts.googleapis.com/earlyaccess/notosanskr.css\" rel=\"stylesheet\">\n  <style>\n    body {\n      margin: 0;\n      padding: 0;\n      font-family: 'Noto Sans', 'Noto Sans KR', Arial, sans-serif;\n      background-color: #f9f9f9;\n      cursor: auto; /* Use the default cursor */\n    }\n    #header {\n      background-color: pink; /* Updated header background color to pink */\n      padding: 20px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      height: 100px;\n      position: relative;\n    }\n    .header-input {\n      font-family: 'Noto Sans', 'Noto Sans KR', Arial, sans-serif;\n      font-size: 2em;\n      color: #fff; /* Set text color to white */\n      background: transparent;\n      border: none;\n      text-align: center;\n      width: 100%;\n      outline: none;\n    }\n    .header-input::placeholder {\n      color: #ccc; /* Set placeholder color to light gray */\n    }\n    .hamburger-menu {\n      position: absolute;\n      left: 20px;\n      top: 20px;\n      width: 30px;\n      height: 30px;\n      cursor: pointer;\n      display: flex;\n      flex-direction: column;\n      justify-content: space-between;\n    }\n    .hamburger-menu span {\n      display: block;\n      width: 100%;\n      height: 4px;\n      background-color: #fff;\n    }\n    .day-of-week, .day {\n      width: 100px; /* Set a fixed width for all day and day-of-week cells */\n      height: 100px; /* Set a fixed height for all day and day-of-week cells */\n      box-sizing: border-box;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n    .day-of-week {\n      font-weight: bold;\n      text-align: center;\n      background-color: #f1f1f1;\n      padding: 5px;\n    }\n    #preset-image {\n      position: absolute;\n      top: 20px;\n      right: 20px;\n      width: 100px;\n      height: 100px;\n      border-radius: 50%;\n      border: 2px solid #ddd;\n      cursor: pointer; /* Add cursor pointer for preset image */\n    }\n    button {\n      background: none;\n      color: blue;\n      font-size: 1.2em;\n      border: none;\n      cursor: pointer;\n      text-decoration: underline;\n    }\n    button:disabled {\n      color: gray;\n      cursor: not-allowed;\n    }\n    .day {\n      padding: 10px;\n      margin: 2px;\n      cursor: pointer;\n      text-align: center;\n      box-sizing: border-box;\n      border-radius: 50%; /* Keep this line to make the border round */\n    }\n    .today {\n      color: #FF6961; /* Set TODAY text color to light red */\n      font-weight: bold; /* Make the text bold */\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n    }\n  </style>\n  ");
 // Header
 var header = document.createElement("div");
 header.id = "header";
@@ -17,6 +17,10 @@ header.style.justifyContent = "center";
 header.style.alignItems = "center";
 header.style.height = "100px"; // Set a height for the header
 header.style.flexDirection = "column"; // Ensure the header text and preset buttons are stacked vertically
+var hamburgerMenu = document.createElement("div");
+hamburgerMenu.className = "hamburger-menu";
+hamburgerMenu.innerHTML = "\n  <span></span>\n  <span></span>\n  <span></span>\n";
+header.appendChild(hamburgerMenu);
 var headerInput = document.createElement("input");
 headerInput.type = "text";
 headerInput.className = "header-input";
@@ -52,8 +56,8 @@ if (savedHeaderInput) {
 }
 // Change mouse cursor to preset image
 presetImage.addEventListener("click", function () {
-    document.body.style.cursor = "url('cursor.cur'), auto";
-    isPresetActive = true;
+    isPresetActive = !isPresetActive;
+    document.body.style.cursor = isPresetActive ? "url('cursor.cur'), auto" : 'auto';
 });
 // Reset cursor and set day image
 calendarContainer.addEventListener("click", function (event) {
@@ -69,11 +73,14 @@ calendarContainer.addEventListener("click", function (event) {
             // Save to localStorage
             storedData[dayKey] = selectedPreset;
             localStorage.setItem("calendarData", JSON.stringify(storedData));
+            // Reset cursor and deactivate preset
+            document.body.style.cursor = "auto";
+            isPresetActive = false;
         }
-        else {
-            // Remove preset image and restore day number
+        else if (storedData[dayKey]) {
+            // Remove preset image
             target.style.backgroundImage = "none";
-            target.textContent = dayKey.split("-")[2]; // Extract the day from the key
+            target.textContent = dayKey.split("-")[2]; // Restore the day number
             // Remove from localStorage
             delete storedData[dayKey];
             localStorage.setItem("calendarData", JSON.stringify(storedData));
@@ -157,8 +164,7 @@ function renderCalendar(monthIndex) {
         emptyCell.style.visibility = "hidden";
         daysContainer.appendChild(emptyCell);
     }
-    // Render days of the month
-    for (var day = 1; day <= daysInMonth; day++) {
+    var _loop_1 = function (day) {
         var dayKey = "".concat(year, "-").concat(monthIndex, "-").concat(day);
         var dayElement = document.createElement("div");
         dayElement.className = "day";
@@ -175,10 +181,24 @@ function renderCalendar(monthIndex) {
         if (day === todayDate && monthIndex === todayMonth && year === todayYear) {
             dayElement.classList.add("today");
             var todayText = document.createElement("div");
+            todayText.className = "today";
             todayText.textContent = "TODAY";
             dayElement.appendChild(todayText);
         }
+        // Add click event to add preset image
+        dayElement.addEventListener("click", function () {
+            if (isPresetActive) {
+                var presetImg = document.createElement("img");
+                presetImg.src = selectedPreset;
+                presetImg.className = "preset";
+                dayElement.appendChild(presetImg);
+            }
+        });
         daysContainer.appendChild(dayElement);
+    };
+    // Render days of the month
+    for (var day = 1; day <= daysInMonth; day++) {
+        _loop_1(day);
     }
     calendarContainer.appendChild(daysContainer);
 }

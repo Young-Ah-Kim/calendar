@@ -11,12 +11,13 @@ document.body.appendChild(calendarContainer);
 document.head.insertAdjacentHTML(
   "beforeend",
   `
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet">
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Noto Sans', 'Noto Sans KR', Arial, sans-serif;
       background-color: #f9f9f9;
       cursor: auto; /* Use the default cursor */
     }
@@ -27,9 +28,10 @@ document.head.insertAdjacentHTML(
       justify-content: center;
       align-items: center;
       height: 100px;
+      position: relative;
     }
     .header-input {
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Noto Sans', 'Noto Sans KR', Arial, sans-serif;
       font-size: 2em;
       color: #fff; /* Set text color to white */
       background: transparent;
@@ -40,6 +42,23 @@ document.head.insertAdjacentHTML(
     }
     .header-input::placeholder {
       color: #ccc; /* Set placeholder color to light gray */
+    }
+    .hamburger-menu {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hamburger-menu span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      background-color: #fff;
     }
     .day-of-week, .day {
       width: 100px; /* Set a fixed width for all day and day-of-week cells */
@@ -94,7 +113,7 @@ document.head.insertAdjacentHTML(
       justify-content: center;
     }
   </style>
-`
+  `
 );
 
 // Header
@@ -106,6 +125,15 @@ header.style.justifyContent = "center";
 header.style.alignItems = "center";
 header.style.height = "100px"; // Set a height for the header
 header.style.flexDirection = "column"; // Ensure the header text and preset buttons are stacked vertically
+
+const hamburgerMenu = document.createElement("div");
+hamburgerMenu.className = "hamburger-menu";
+hamburgerMenu.innerHTML = `
+  <span></span>
+  <span></span>
+  <span></span>
+`;
+header.appendChild(hamburgerMenu);
 
 const headerInput: HTMLInputElement = document.createElement("input");
 headerInput.type = "text";
@@ -130,12 +158,13 @@ presetImage.id = "preset-image";
 presetImage.src = "preset1.png"; // Initial preset image
 presetImage.alt = "Preset Image";
 document.body.appendChild(presetImage);
+
 // Track selected preset image
 let selectedPreset = "preset1.png";
 let isPresetActive = false; // Track if preset is active
 let storedData = JSON.parse(localStorage.getItem("calendarData") || "{}");
 
-// Save header input to localStorag
+// Save header input to localStorage
 headerInput.addEventListener("input", () => {
   localStorage.setItem("headerInput", headerInput.value);
 });
@@ -148,8 +177,8 @@ if (savedHeaderInput) {
 
 // Change mouse cursor to preset image
 presetImage.addEventListener("click", () => {
-  document.body.style.cursor = `url('cursor.cur'), auto`;
-  isPresetActive = true;
+  isPresetActive = !isPresetActive;
+  document.body.style.cursor = isPresetActive ? `url('cursor.cur'), auto` : 'auto';
 });
 
 // Reset cursor and set day image
@@ -168,10 +197,14 @@ calendarContainer.addEventListener("click", (event) => {
       // Save to localStorage
       storedData[dayKey] = selectedPreset;
       localStorage.setItem("calendarData", JSON.stringify(storedData));
-    } else {
-      // Remove preset image and restore day number
+
+      // Reset cursor and deactivate preset
+      document.body.style.cursor = "auto";
+      isPresetActive = false;
+    } else if (storedData[dayKey]) {
+      // Remove preset image
       target.style.backgroundImage = "none";
-      target.textContent = dayKey.split("-")[2]; // Extract the day from the key
+      target.textContent = dayKey.split("-")[2]; // Restore the day number
 
       // Remove from localStorage
       delete storedData[dayKey];
@@ -289,9 +322,20 @@ function renderCalendar(monthIndex: number): void {
     if (day === todayDate && monthIndex === todayMonth && year === todayYear) {
       dayElement.classList.add("today");
       const todayText = document.createElement("div");
+      todayText.className = "today";
       todayText.textContent = "TODAY";
       dayElement.appendChild(todayText);
     }
+
+    // Add click event to add preset image
+    dayElement.addEventListener("click", () => {
+      if (isPresetActive) {
+        const presetImg = document.createElement("img");
+        presetImg.src = selectedPreset;
+        presetImg.className = "preset";
+        dayElement.appendChild(presetImg);
+      }
+    });
 
     daysContainer.appendChild(dayElement);
   }
